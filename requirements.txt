@@ -1,0 +1,11 @@
+django
+djangorestframework
+environs
+inflection
+uritemplate
+djangorestframework-api-key==3.*
+drf-spectacular 
+drf-spectacular-sidecar
+django-filter
+pymysql
+cryptography

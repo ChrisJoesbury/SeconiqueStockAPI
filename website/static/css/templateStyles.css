@@ -1,0 +1,792 @@
+/* templateStyles.css */
+
+/* ============================================
+   Template Styles - Central CSS File
+   Used by: login.html, profile.html, swagger_ui.html
+   ============================================ */
+
+/* ============================================
+   CSS Variables (Common)
+   ============================================ */
+:root {
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #004A99;      /* Seconique blue */
+  --primary-dark: #003b7a;
+  --accent: #10B981;
+  --accent-dark: #0E9F6E;
+  --danger: #B00020;
+  --danger-dark: #8A001A;
+  --purple: #9333EA;
+  --purple-dark: #7C3AED;
+  --radius: 12px;
+  --shadow: 0 10px 30px rgba(0,0,0,.06);
+  --backdrop: rgba(17, 24, 39, .5);
+  --overlay: rgba(0,0,0,.45);
+  --focus: 0 0 0 3px rgba(0, 74, 153, .25);
+}
+
+/* ============================================
+   Base Styles (Common)
+   ============================================ */
+/* Reset box-sizing for all elements */
+* {
+  box-sizing: border-box;
+}
+
+/* Set full height for html and body */
+html, body {
+  height: 100%;
+}
+
+/* Scoped body styles - only for login and profile pages */
+body.login-page,
+body.profile-page {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ============================================
+   Common Components (scoped to login/profile pages)
+   ============================================ */
+
+/* Container - Main wrapper for login and profile pages */
+body.login-page .container,
+body.profile-page .container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Card - Styled container for form content */
+body.login-page .card,
+body.profile-page .card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+/* Buttons - Primary button styles for login/profile pages */
+body.login-page .btn,
+body.profile-page .btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: .85rem 1rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .15s, transform .02s ease-in;
+  text-decoration: none;
+  text-align: center;
+}
+
+body.login-page .btn:hover,
+body.profile-page .btn:hover {
+  background: var(--primary-dark);
+}
+
+body.login-page .btn:active,
+body.profile-page .btn:active {
+  transform: translateY(1px);
+}
+
+/* Accent button variant - Green accent color */
+body.login-page .btn--accent,
+body.profile-page .btn--accent {
+  background: var(--accent);
+}
+
+body.login-page .btn--accent:hover,
+body.profile-page .btn--accent:hover {
+  background: var(--accent-dark);
+}
+
+/* Purple button variant */
+body.login-page .btn--purple,
+body.profile-page .btn--purple {
+  background: var(--purple);
+}
+
+body.login-page .btn--purple:hover,
+body.profile-page .btn--purple:hover {
+  background: var(--purple-dark);
+}
+
+/* Danger button variant - Red warning color */
+body.login-page .btn--danger,
+body.profile-page .btn--danger {
+  background: var(--danger);
+}
+
+body.login-page .btn--danger:hover,
+body.profile-page .btn--danger:hover {
+  background: var(--danger-dark);
+}
+
+/* Ghost button variant - Outlined style */
+body.login-page .btn--ghost,
+body.profile-page .btn--ghost {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #eee;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Ghost modal button variant - For modal dialogs */
+body.login-page .btn--ghost-modal,
+body.profile-page .btn--ghost-modal {
+  margin: 0;
+  padding: .85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #eee;
+  color: #333;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.5;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color .15s, transform .02s ease-in;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+}
+
+body.login-page .btn--ghost-modal:hover,
+body.profile-page .btn--ghost-modal:hover {
+  background: #ddd;
+}
+
+body.login-page .btn--ghost-modal:active,
+body.profile-page .btn--ghost-modal:active {
+  transform: translateY(1px);
+}
+
+/* Input fields - Text, email, URL, and password inputs */
+body.login-page .input,
+body.profile-page .input,
+body.login-page input[type="text"],
+body.profile-page input[type="text"],
+body.login-page input[type="email"],
+body.profile-page input[type="email"],
+body.login-page input[type="url"],
+body.profile-page input[type="url"],
+body.login-page input[type="password"],
+body.profile-page input[type="password"] {
+  width: 100%;
+  padding: .75rem .9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+body.login-page .input:focus,
+body.profile-page .input:focus,
+body.login-page input[type="text"]:focus,
+body.profile-page input[type="text"]:focus,
+body.login-page input[type="email"]:focus,
+body.profile-page input[type="email"]:focus,
+body.login-page input[type="url"]:focus,
+body.profile-page input[type="url"]:focus,
+body.login-page input[type="password"]:focus,
+body.profile-page input[type="password"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--focus);
+}
+
+body.login-page .input::placeholder,
+body.profile-page .input::placeholder {
+  color: var(--muted);
+}
+
+/* Alert messages - Success/info alerts */
+body.login-page .alert,
+body.profile-page .alert {
+  background: rgba(0,74,153,.08);
+  border: 1px solid rgba(0,74,153,.35);
+  color: #003b7a;
+  padding: .75rem .9rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+/* Error alert variant - Red error styling */
+body.login-page .alert--error,
+body.profile-page .alert--error {
+  background: rgba(176,0,32,.08);
+  border-color: rgba(176,0,32,.35);
+  color: #b00020;
+}
+
+/* Modal backdrop - Overlay background for modals */
+body.login-page .modal-backdrop,
+body.profile-page .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--backdrop);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+/* Modal card - Content container for modal dialogs */
+body.login-page .modal-card,
+body.profile-page .modal-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+/* Modal title - Heading text in modals */
+body.login-page .modal-title,
+body.profile-page .modal-title {
+  margin: 0 0 .25rem 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Modal text - Body text in modals */
+body.login-page .modal-text,
+body.profile-page .modal-text {
+  margin: .25rem 0 1rem 0;
+  color: var(--muted);
+}
+
+/* Modal actions - Button container at bottom of modals */
+body.login-page .modal-actions,
+body.profile-page .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+
+body.login-page .modal-actions .btn,
+body.profile-page .modal-actions .btn {
+  margin-top: 0;
+}
+
+/* ============================================
+   Login Page Styles
+   ============================================ */
+/* Login page layout - Centered grid layout */
+body.login-page {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+/* Login page container - Max width constraint */
+.login-page .container {
+  max-width: 440px;
+}
+
+/* Brand section - Logo and subtitle */
+body.login-page .brand {
+  display: grid;
+  justify-items: center;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+/* Brand logo image */
+body.login-page .brand img {
+  width: 220px;
+  height: auto;
+}
+
+/* Brand subtitle text */
+body.login-page .brand__subtitle {
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0;
+}
+
+/* Login form layout */
+body.login-page form {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Form field container */
+body.login-page .field {
+  display: grid;
+  gap: .45rem;
+  width: 100%;
+}
+
+/* Form field labels */
+body.login-page .field label {
+  font-weight: 600;
+  font-size: .95rem;
+}
+
+/* Inline row - For checkbox and link combinations */
+body.login-page .row-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-top: .25rem;
+  width: 100%;
+}
+
+/* Checkbox styling */
+body.login-page .checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--muted);
+  user-select: none;
+  font-size: .92rem;
+}
+
+/* Link styling */
+body.login-page .link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+body.login-page .link:hover {
+  text-decoration: underline;
+}
+
+/* Login page button - Full width */
+body.login-page .btn {
+  width: 100%;
+  gap: .5rem;
+}
+
+/* Error list - Django form validation errors */
+body.login-page .errorlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--danger);
+  font-size: .95rem;
+}
+
+/* Login page alert spacing */
+body.login-page .alert {
+  margin-bottom: .25rem;
+}
+
+/* Login Modal - Legacy modal structure */
+body.login-page .login-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay);
+  z-index: 1000;
+}
+
+body.login-page .login-modal[open] {
+  display: flex;
+}
+
+/* Modal container */
+body.login-page .modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay);
+  z-index: 1000;
+}
+
+/* Modal open state */
+body.login-page .modal[open] {
+  display: flex;
+}
+
+/* Modal dialog box */
+body.login-page .modal__dialog {
+  width: min(520px, 92vw);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Modal header */
+body.login-page .modal__header {
+  padding: 1rem 1.25rem;
+  background: #f0f5fb;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Modal body content */
+body.login-page .modal__body {
+  padding: 1rem 1.25rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* Modal footer - Action buttons area */
+body.login-page .modal__footer {
+  padding: .85rem 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  background: #fafbfc;
+}
+
+/* Primary button variant */
+body.login-page .btn--primary {
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: .7rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body.login-page .btn--primary:hover {
+  background: var(--primary-dark);
+}
+
+/* Footer text - Copyright and links */
+body.login-page .footer {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* Visually hidden - Screen reader only content */
+body.login-page .visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   Profile Page Styles
+   ============================================ */
+/* Profile page layout - Centered grid layout */
+body.profile-page {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+/* Profile page button - Full width with top margin */
+body.profile-page .btn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+/* Profile page title */
+body.profile-page .title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+/* Profile page subtitle */
+body.profile-page .subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin-top: .25rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+/* Profile grid - Container for profile fields */
+body.profile-page .profile-grid {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+/* Profile field container */
+body.profile-page .profile-field {
+  display: grid;
+  gap: .35rem;
+}
+
+/* Profile field label */
+body.profile-page .profile-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Profile value display */
+body.profile-page .profile-value {
+  padding: .75rem .9rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: var(--text);
+  word-break: break-word;
+}
+
+/* Locked profile value - Read-only fields */
+body.profile-page .profile-value.locked {
+  background: #f0f0f0;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  position: relative;
+}
+
+body.profile-page .profile-value.locked.username,
+body.profile-page .profile-value.locked.left-aligned {
+  justify-content: flex-start;
+}
+
+body.profile-page .profile-value.locked .content {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.profile-page .profile-value.locked.username:hover::after {
+  content: "Usernames cannot be changed";
+  position: absolute;
+  left: 0;
+  bottom: -32px;
+  background: #333;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: .85rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+}
+
+/* Inline field - API key display with copy button */
+body.profile-page .field-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: .35rem .35rem .35rem .6rem;
+}
+
+/* Field grow - Flexible container for API key text */
+body.profile-page .field-inline .field-grow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Field actions - Button container for inline fields */
+body.profile-page .field-inline .field-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* Copy notification - Toast notification when copying API key */
+body.profile-page .copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+  display: none;
+  align-items: center;
+  gap: .75rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+body.profile-page .copy-notification.show {
+  display: flex;
+}
+
+/* Slide-in animation for copy notification */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Copy notification icon */
+body.profile-page .copy-notification-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+/* Copy notification text */
+body.profile-page .copy-notification-text {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ============================================
+   Swagger UI Styles
+   ============================================ */
+/* Swagger page base styles */
+body.swagger-page {
+  margin: 0;
+  background: #fafafa;
+}
+
+/* Swagger user box - User info display in top right */
+.swagger-user-box {
+  position: fixed;
+  top: 10px;
+  right: 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.9);
+  padding: 6px 14px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.20);
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Swagger user label text */
+.swagger-user-label {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Swagger username display */
+.swagger-username {
+  font-weight: 700;
+  color: #333;
+}
+
+/* Swagger user actions - Button container */
+.swagger-user-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Swagger logout button */
+.swagger-logout-btn {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+}
+
+/* Swagger logout button hover state */
+.swagger-logout-btn:hover {
+  background: #c0392b;
+}
+
+/* Swagger profile button */
+.swagger-profile-btn {
+  background: #3498db;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  box-sizing: border-box;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+}
+
+/* Swagger profile button hover state */
+.swagger-profile-btn:hover {
+  background: #2c80b9;
+  text-decoration: none;
+}
+
+/* Swagger profile avatar icon */
+.swagger-profile-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff3;
+  border: 1px solid #ffffff55;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+/* Mobile responsive - Adjust padding for small screens */
+@media (max-width: 480px) {
+  body.login-page .card,
+  body.profile-page .card {
+    padding: 1.25rem;
+  }
+}

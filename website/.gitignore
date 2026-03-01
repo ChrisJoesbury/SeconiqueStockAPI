@@ -1,0 +1,43 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django collected static files (regenerate with: python manage.py collectstatic)
+staticfiles/
+
+# Environment variables (never commit secrets)
+.env
+.env.*
+
+# Local development database
+db.sqlite3
+*.sqlite3
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python packaging artifacts
+*.egg-info/
+dist/
+build/
+*.egg
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Seed data (may contain real business data)
+../seed/stocklevels.csv
+
+# Temporary deletion folder
+#delete me#/

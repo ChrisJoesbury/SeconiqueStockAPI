@@ -1,0 +1,184 @@
+<!-- templates/register.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Page metadata -->
+  <meta charset="UTF-8" />
+  <title>Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/templateStyles.css' %}">
+</head>
+<body class="login-page">
+  <!-- Main content container -->
+  <main class="container" role="main">
+    <!-- Registration card section -->
+    <section class="card" aria-labelledby="register-title">
+      <!-- Brand section - Logo and subtitle -->
+      <div class="brand">
+        <!-- Seconique logo -->
+        <img src="{% static 'images/seconique-logo.png' %}" alt="Seconique" />
+        <h1 id="register-title" class="visually-hidden">Register</h1>
+        <p class="brand__subtitle">Stock API System Registration</p>
+      </div>
+
+      <!-- Registration form -->
+      <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+
+        <!-- Non-field (global) form errors -->
+        {% if form.non_field_errors %}
+          <div class="alert" role="alert" aria-live="polite">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <!-- Display messages -->
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert--error{% elif message.tags == 'success' %}alert--success{% endif %}" role="alert" aria-live="polite">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Username <span class="required-indicator">*</span></label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+
+        <!-- Email field -->
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email Address <span class="required-indicator">*</span></label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+
+        <!-- Company Name field -->
+        <div class="field">
+          <label for="{{ form.company_Name.id_for_label }}">Company Name <span class="required-indicator">*</span></label>
+          {{ form.company_Name }}
+          {{ form.company_Name.errors }}
+        </div>
+
+        <!-- First Name field -->
+        <div class="field">
+          <label for="{{ form.first_name.id_for_label }}">First Name <span class="required-indicator">*</span></label>
+          {{ form.first_name }}
+          {{ form.first_name.errors }}
+        </div>
+
+        <!-- Last Name field -->
+        <div class="field">
+          <label for="{{ form.last_name.id_for_label }}">Last Name <span class="required-indicator">*</span></label>
+          {{ form.last_name }}
+          {{ form.last_name.errors }}
+        </div>
+
+        <!-- Password field with show/hide toggle -->
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Password <span class="required-indicator">*</span></label>
+          {{ form.password }}
+          {{ form.password.errors }}
+          {% if form.password.help_text %}
+            <small class="help-text">{{ form.password.help_text }}</small>
+          {% endif %}
+
+          <div class="row-inline">
+            <label class="checkbox" for="show-password">
+              <input type="checkbox" id="show-password" />
+            <span>Show password</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Confirm Password field -->
+      <div class="field">
+        <label for="{{ form.password_confirm.id_for_label }}">Confirm Password <span class="required-indicator">*</span></label>
+          {{ form.password_confirm }}
+          {{ form.password_confirm.errors }}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn">Register</button>
+      </form>
+
+      <!-- Footer - Login link and copyright -->
+      <p class="footer" role="contentinfo">
+        <a href="{% url 'login' %}" class="link">Already have an account? Sign in</a><br>
+        <br>
+        © Seconique Furniture Ltd.
+      </p>
+    </section>
+  </main>
+
+  <!-- Inline styles for required field indicators and error states -->
+  <style>
+    .required-indicator {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .field input.error {
+      border-color: #dc3545;
+    }
+  </style>
+  <!-- JavaScript functionality -->
+  <script>
+    (function () {
+      // Show password toggle - Toggle password visibility for both password fields
+      const toggle = document.getElementById('show-password');
+      const passwordFields = document.querySelectorAll('input[type="password"]');
+      
+      if (toggle && passwordFields.length > 0) {
+        toggle.addEventListener('change', () => {
+          passwordFields.forEach(pw => {
+            pw.type = toggle.checked ? 'text' : 'password';
+          });
+        });
+      }
+
+      // Client-side form validation - Validates required fields before submission
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          let isValid = true;
+          const requiredFields = form.querySelectorAll('input[required]');
+          
+          requiredFields.forEach(field => {
+            // Remove previous error styling
+            field.classList.remove('error');
+            const errorMsg = field.parentElement.querySelector('.field-error');
+            if (errorMsg) {
+              errorMsg.remove();
+            }
+            
+            // Check if field is empty
+            if (!field.value || field.value.trim() === '') {
+              isValid = false;
+              field.classList.add('error');
+              
+              // Add error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'alert alert--error field-error';
+              errorDiv.textContent = 'This field is required.';
+              field.parentElement.appendChild(errorDiv);
+            }
+          });
+          
+          if (!isValid) {
+            e.preventDefault();
+            // Scroll to first error
+            const firstError = form.querySelector('.error');
+            if (firstError) {
+              firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              firstError.focus();
+            }
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

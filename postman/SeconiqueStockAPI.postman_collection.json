@@ -1,0 +1,268 @@
+{
+  "info": {
+    "_postman_id": "0a7c70a9-70ce-4f6d-be45-31c1a2f9896b",
+    "name": "SeconiqueStockAPI",
+    "description": "# SeconiqueStockAPI\n\nSeconiqueStockAPI is a stock API platform designed to provide **self‑service, real‑time stock level access for customers**. It standardises product and inventory data, enabling customers to integrate stock feeds into their systems using modern REST endpoints or legacy‑friendly CSV downloads.\n\n## ✨ Features\n\n- **Real‑time Stock Feeds** via JSON and CSV\n    \n- **Advanced Filtering** on groups, ranges, stock levels, part numbers\n    \n- **CSV Support** for legacy integrations\n    \n- **Standardised Output Format** across endpoints\n    \n\n---\n\n## 📚 API Endpoints\n\nAll endpoints require an API key passed in the `Authorization` header:\n\n``` http\nAuthorization: Api-Key <your_api_key>\n\n ```",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "",
+    "_collection_link": ""
+  },
+  "item": [
+    {
+      "name": "prodgroups",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{APIKEY}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{url}}/prodgroups",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "prodgroups"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "e.g. 100",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "10",
+              "description": "e.g. 10",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "prodsubgroups",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{APIKEY}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{url}}/prodsubgroups",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "prodsubgroups"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "e.g. 100",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "10",
+              "description": "e.g. 10",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ranges",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{APIKEY}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{url}}/ranges",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "ranges"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "e.g. 100",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "10",
+              "description": "e.g. 10",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "stocklevels",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{APIKEY}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{url}}/stocklevels",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "stocklevels"
+          ],
+          "query": [
+            {
+              "key": "partNum",
+              "value": "100-101-008",
+              "description": "e.g. 100-101-008 (SINGLY)",
+              "disabled": true
+            },
+            {
+              "key": "rangeName",
+              "value": "CAMBOURNE RANGE",
+              "description": "e.g. CAMBOURNE RANGE (SINGLY)",
+              "disabled": true
+            },
+            {
+              "key": "groupDesc",
+              "value": "BEDROOM FURNITURE",
+              "description": "e.g. BEDROOM FURNITURE (SINGLY)",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "subGroupDesc",
+              "value": "WARDROBES",
+              "description": "e.g. WARDROBES (SINGLY)",
+              "disabled": true
+            },
+            {
+              "key": "sl_greaterThan",
+              "value": "0",
+              "description": "e.g. stockLev Greater Than ?",
+              "disabled": true
+            },
+            {
+              "key": "sl_lessThan",
+              "value": "20",
+              "description": "e.g. stockLev Less Than ?",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "sl_equalTo",
+              "value": "4",
+              "description": "e.g. stockLev Equal To ?",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "e.g. 100",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "10",
+              "description": "e.g. 10",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "stocklevels/csv",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "{{APIKEY}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{url}}/stocklevels/csv",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "stocklevels",
+            "csv"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "APIKEY",
+      "value": ""
+    },
+    {
+      "key": "url",
+      "value": ""
+    }
+  ]
+}

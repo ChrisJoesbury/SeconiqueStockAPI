@@ -1,0 +1,126 @@
+<!-- templates/drf_spectacular/swagger_ui.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Page metadata -->
+    <title>Seconique Furniture Stock API System</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Swagger UI CSS and assets -->
+    <link rel="icon" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/favicon-32x32.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css">
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/templateStyles.css' %}">
+  </head>
+  <body class="swagger-page">
+    <!-- Inject logged-in username from Django for JavaScript use -->
+    <script>
+      window._swaggerUsername = "{{ user.get_username|escapejs }}";
+    </script>
+
+    <!-- Swagger UI container -->
+    <div id="swagger-ui"></div>
+
+    <!-- Swagger UI JavaScript libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js"></script>
+
+    <!-- Swagger UI initialization and custom user box -->
+    <script>
+      // Initialize Swagger UI - Load API schema and configure UI
+      const ui = SwaggerUIBundle({
+        url: "/api/schema/",
+        dom_id: "#swagger-ui",
+        presets: [SwaggerUIBundle.presets.apis],
+        layout: "BaseLayout",
+        defaultModelsExpandDepth: 0,
+      });
+
+      // Build user box - Display username, Logout button, and Profile link
+      // Profile button is positioned to the RIGHT of Logout button
+      (function showUserBox() {
+        // Get username from injected variable
+        const username = (window._swaggerUsername || "").trim();
+
+        // Create user box container
+        const box = document.createElement("div");
+        box.className = "swagger-user-box";
+
+        // Create username display if user is logged in
+        if (username) {
+          const label = document.createElement("span");
+          label.className = "swagger-user-label";
+          label.textContent = "Logged in as ";
+          label.setAttribute("aria-label", "Current user " + username);
+          
+          const usernameSpan = document.createElement("span");
+          usernameSpan.className = "swagger-username";
+          usernameSpan.textContent = username;
+          
+          label.appendChild(usernameSpan);
+          box.appendChild(label);
+        }
+
+        // Create actions container for buttons
+        const actions = document.createElement("div");
+        actions.className = "swagger-user-actions";
+
+        // CSRF token helper - Get CSRF token from cookies for Logout form
+        function getCookie(name) {
+          return document.cookie
+            .split("; ")
+            .find(r => r.startsWith(name + "="))
+            ?.split("=")[1];
+        }
+
+        // Logout form - Create POST form with CSRF token
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/logout/";
+        form.setAttribute("aria-label", "Logout form");
+
+        const csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
+        csrfInput.name = "csrfmiddlewaretoken";
+        csrfInput.value = getCookie("csrftoken") || "";
+        form.appendChild(csrfInput);
+
+        // Create Logout button
+        const btn = document.createElement("button");
+        btn.className = "swagger-logout-btn";
+        btn.textContent = "Logout";
+        btn.type = "submit";
+        form.appendChild(btn);
+
+        // Append Logout form FIRST (positioned on the left)
+        actions.appendChild(form);
+
+        // Profile button - GET link appended AFTER Logout (sits on the RIGHT)
+        const profileLink = document.createElement("a");
+        profileLink.className = "swagger-profile-btn";
+        profileLink.href = "/profile/";  // Change if your profile route differs, e.g.: "{% url 'profile' %}"
+        profileLink.role = "button";
+        profileLink.setAttribute("aria-label", "Open profile");
+
+        // Create avatar icon
+        const avatar = document.createElement("span");
+        avatar.className = "swagger-profile-avatar";
+        profileLink.appendChild(avatar);
+
+        // Create profile text
+        const profileText = document.createElement("span");
+        profileText.textContent = "Profile";
+        profileLink.appendChild(profileText);
+
+        // Append Profile link SECOND (positioned on the right)
+        actions.appendChild(profileLink);
+
+        // Mount user box to page
+        box.appendChild(actions);
+        document.body.appendChild(box);
+      })();
+    </script>
+  </body>
+</html>

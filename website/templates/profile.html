@@ -1,0 +1,517 @@
+<!-- templates/profile.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Page metadata -->
+  <meta charset="UTF-8" />
+  <title>My Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/templateStyles.css' %}">
+</head>
+<body class="profile-page">
+  <!-- Main content container -->
+  <main class="container" role="main">
+    <!-- Profile card section -->
+    <section class="card" aria-labelledby="profile-title">
+      <!-- Page header -->
+      <h1 id="profile-title" class="title">My Profile</h1>
+      <p class="subtitle">Account Information</p>
+
+      <!-- Django messages - Success/error notifications -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert--{{ message.tags }}{% endif %}" role="status" aria-live="polite">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Navigation - Return to Dashboard button -->
+      <a href="{% url 'home' %}" class="btn">Return to Dashboard</a>
+
+      <!-- Profile edit form - One form for all editable fields -->
+      <form method="post" action="">
+        {% csrf_token %}
+
+        <!-- Profile fields grid -->
+        <div class="profile-grid">
+          <!-- Username field (read-only, locked) -->
+          <div class="profile-field">
+            <span class="profile-label">Username</span>
+            <span class="profile-value locked username" title="Usernames cannot be changed">
+              <!-- Lock icon -->
+              <svg width="16" height="16" fill="#777" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:0 0 auto; margin-right:.4rem;">
+                <path d="M12 2a5 5 0 00-5 5v4H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 9V7a3 3 0 016 0v4H9z"/>
+              </svg>
+              <span>{{ user.username }}</span>
+            </span>
+          </div>
+
+          <!-- Customer ID field (read-only, locked) -->
+          <div class="profile-field">
+            <span class="profile-label">Customer ID</span>
+            <span class="profile-value locked left-aligned" title="Customer ID cannot be changed">
+              <!-- Lock icon -->
+              <svg width="16" height="16" fill="#777" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:0 0 auto; margin-right:.4rem;">
+                <path d="M12 2a5 5 0 00-5 5v4H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 9V7a3 3 0 016 0v4H9z"/>
+              </svg>
+              <span>{% if user.userprofile.cust_ID %}{{ user.userprofile.cust_ID }}{% else %}Not set{% endif %}</span>
+            </span>
+          </div>
+
+          <!-- User model fields - Editable user information -->
+          <div class="profile-field">
+            <label class="profile-label" for="{{ user_form.email.id_for_label }}">Email</label>
+            {{ user_form.email }}
+            {% if user_form.email.errors %}
+              <div class="alert alert--error" role="alert">{{ user_form.email.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label" for="{{ user_form.first_name.id_for_label }}">First name</label>
+            {{ user_form.first_name }}
+            {% if user_form.first_name.errors %}
+              <div class="alert alert--error" role="alert">{{ user_form.first_name.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="profile-field">
+            <label class="profile-label" for="{{ user_form.last_name.id_for_label }}">Last name</label>
+            {{ user_form.last_name }}
+            {% if user_form.last_name.errors %}
+              <div class="alert alert--error" role="alert">{{ user_form.last_name.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- UserProfile model fields - Additional profile information -->
+          <div class="profile-field">
+            <label class="profile-label" for="{{ profile_form.website.id_for_label }}">Website</label>
+            {{ profile_form.website }}
+            {% if profile_form.website.errors %}
+              <div class="alert alert--error" role="alert">{{ profile_form.website.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Save button - Submits profile changes -->
+        <button type="submit" class="btn btn--accent">Save Profile Changes</button>
+
+        <!-- API Key management section -->
+        <div class="profile-grid" style="margin-top:1.5rem;">
+          <!-- API Key field - Automated generation and management -->
+          <div class="profile-field">
+            <label class="profile-label">API Key</label>
+
+            {% if user.userprofile.api_key %}
+              <!-- API key exists - Display masked view (no reveal functionality) -->
+              <div class="profile-value locked" role="group" aria-label="Masked API key preview" style="display:flex;">
+                <!-- Lock icon -->
+                <svg width="16" height="16" fill="#777" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:0 0 auto; margin-right:.4rem;">
+                  <path d="M12 2a5 5 0 00-5 5v4H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 9V7a3 3 0 016 0v4H9z"/>
+                </svg>
+                <span class="content">
+                  {{ user.userprofile.api_key }}
+                </span>
+              </div>
+
+              <!-- API key action buttons - Regenerate and Delete options -->
+              <div style="display:flex; gap:.5rem; margin-top:.75rem;">
+                <button
+                  type="button"
+                  id="regenerate-btn"
+                  class="btn btn--purple"
+                  style="flex:1; margin-top:0;">
+                  Regenerate API Key
+                </button>
+                <button
+                  type="button"
+                  id="delete-btn"
+                  class="btn btn--danger"
+                  style="flex:1; margin-top:0;">
+                  Delete API Key
+                </button>
+              </div>
+            {% else %}
+              <!-- No API key state - Display message and generate button -->
+              <div class="profile-value locked" style="display:flex; align-items:center; justify-content:center; padding:1.5rem; color:var(--muted);">
+                <span>No API key generated yet</span>
+              </div>
+              <button
+                type="button"
+                id="generate-btn"
+                class="btn btn--purple"
+                style="width:100%; margin-top:.75rem;">
+                Generate API Key
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+
+      <!-- Hidden forms for API key actions - Separate forms to avoid nesting issues -->
+      <!-- Regenerate API key form -->
+      <form method="post" action="" id="regenerate-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="generate_api_key" value="1">
+      </form>
+      <!-- Delete API key form -->
+      <form method="post" action="" id="delete-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="delete_api_key" value="1">
+      </form>
+      <!-- Generate API key form -->
+      <form method="post" action="" id="generate-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="generate_api_key" value="1">
+      </form>
+    </section>
+  </main>
+
+  <!-- Copy Notification - Toast notification when API key is copied -->
+  <div id="copy-notification" class="copy-notification" role="status" aria-live="polite">
+    <svg class="copy-notification-icon" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </svg>
+    <span class="copy-notification-text">API key copied to clipboard!</span>
+  </div>
+
+  <!-- API Key Generation Success Modal - Shows new API key after generation -->
+  <div id="api-key-success-modal" class="modal-backdrop" role="presentation" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="api-key-success-title">
+      <div class="modal-card">
+        <h3 id="api-key-success-title" class="modal-title">API Key Generated Successfully</h3>
+        <p class="modal-text">
+          <strong>Important:</strong> This is the only time you will be able to view your full API key. 
+          Please copy it now and store it securely. If you lose this key, you will need to regenerate it.
+        </p>
+        <div class="api-key-display-container" style="background:var(--bg); padding:1rem; border-radius:4px; margin:1rem 0; font-family:monospace; word-break:break-all; border:1px solid var(--border);">
+          <span id="new-api-key-value" style="color:var(--text);"></span>
+        </div>
+        <div class="modal-actions" style="flex-direction:column; gap:.5rem;">
+          <button type="button" id="copy-new-api-btn" class="btn btn--purple" style="width:100%;">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="display:inline-block; vertical-align:middle; margin-right:6px;">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+            Copy API Key
+          </button>
+          <button type="button" id="api-key-success-close" class="btn btn--accent" style="width:100%;">
+            I've Copied It
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Regenerate API Key Modal - Confirmation dialog for regenerating API key -->
+  <div id="regenerate-modal" class="modal-backdrop" role="presentation" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="regenerate-title">
+      <div class="modal-card">
+        <h3 id="regenerate-title" class="modal-title">Regenerate API Key?</h3>
+        <p class="modal-text">This will generate a new API key and invalidate your current one. Continue?</p>
+        <div class="modal-actions">
+          <button type="button" id="regenerate-cancel" class="btn--ghost-modal">Cancel</button>
+          <button type="button" id="regenerate-accept" class="btn btn--purple">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete API Key Modal - Confirmation dialog for deleting API key -->
+  <div id="delete-modal" class="modal-backdrop" role="presentation" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title">
+      <div class="modal-card">
+        <h3 id="delete-title" class="modal-title">Delete API Key?</h3>
+        <p class="modal-text">Are you sure you want to delete your API key? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button type="button" id="delete-cancel" class="btn--ghost-modal">Cancel</button>
+          <button type="button" id="delete-accept" class="btn btn--danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Verification Required Modal - Shown when account needs verification -->
+  <div id="verification-modal" class="modal-backdrop" role="presentation" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="verification-title">
+      <div class="modal-card">
+        <h3 id="verification-title" class="modal-title">Account Awaiting Verification</h3>
+        <p class="modal-text">
+          Your account requires verification before you can generate an API key. 
+          Please contact <a href="mailto:it@seconique.co.uk" class="link">it@seconique.co.uk</a> to verify your account.
+        </p>
+        <div class="modal-actions">
+          <button type="button" id="verification-close" class="btn btn--accent">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript functionality for modals and API key management -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Copy notification functionality - Toast notification element
+      const copyNotification = document.getElementById("copy-notification");
+
+      // Copy to clipboard function - Handles copying text with fallback for older browsers
+      async function copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          if (copyNotification) {
+            copyNotification.classList.add("show");
+            setTimeout(function(){
+              copyNotification.classList.remove("show");
+            }, 3000);
+          }
+          return true;
+        } catch (err) {
+          // Fallback for older browsers
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand("copy");
+            if (copyNotification) {
+              copyNotification.classList.add("show");
+              setTimeout(function(){
+                copyNotification.classList.remove("show");
+              }, 3000);
+            }
+            document.body.removeChild(textArea);
+            return true;
+          } catch (e) {
+            console.error("Failed to copy:", e);
+            document.body.removeChild(textArea);
+            return false;
+          }
+        }
+      }
+
+      // API Key Generation Success Modal - Modal elements and handlers
+      const apiKeySuccessModal = document.getElementById("api-key-success-modal");
+      const newApiKeyValue = document.getElementById("new-api-key-value");
+      const copyNewApiBtn = document.getElementById("copy-new-api-btn");
+      const apiKeySuccessClose = document.getElementById("api-key-success-close");
+      
+      {% if new_api_key %}
+      // Show the modal if a new API key was generated
+      if (apiKeySuccessModal && newApiKeyValue) {
+        newApiKeyValue.textContent = "{{ new_api_key }}";
+        
+        function openApiKeySuccessModal() {
+          apiKeySuccessModal.style.display = "flex";
+          apiKeySuccessModal.removeAttribute("aria-hidden");
+          if (copyNewApiBtn) copyNewApiBtn.focus({ preventScroll: true });
+          
+          // Focus trap
+          const focusable = [copyNewApiBtn, apiKeySuccessClose].filter(Boolean);
+          function onKey(e) {
+            if (e.key === "Escape") {
+              e.preventDefault();
+              closeApiKeySuccessModal();
+            }
+            if (e.key === "Tab") {
+              e.preventDefault();
+              const i = focusable.indexOf(document.activeElement);
+              focusable[(i + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length].focus();
+            }
+          }
+          
+          apiKeySuccessModal._onKey = onKey;
+          document.addEventListener("keydown", onKey);
+          // Close on backdrop click
+          apiKeySuccessModal.addEventListener("click", function(e) {
+            if (e.target === apiKeySuccessModal) closeApiKeySuccessModal();
+          });
+        }
+
+        function closeApiKeySuccessModal() {
+          document.removeEventListener("keydown", apiKeySuccessModal._onKey || (() => {}));
+          apiKeySuccessModal._onKey = null;
+          apiKeySuccessModal.style.display = "none";
+          apiKeySuccessModal.setAttribute("aria-hidden", "true");
+        }
+        
+        // Wire up buttons
+        if (copyNewApiBtn) {
+          copyNewApiBtn.addEventListener("click", async function() {
+            const apiKey = newApiKeyValue.textContent.trim();
+            await copyToClipboard(apiKey);
+          });
+        }
+        
+        if (apiKeySuccessClose) {
+          apiKeySuccessClose.addEventListener("click", closeApiKeySuccessModal);
+        }
+        
+        // Open modal on page load
+        openApiKeySuccessModal();
+      }
+      {% endif %}
+
+      // Regenerate API Key Modal - Modal elements and handlers
+      const regenerateBtn = document.getElementById("regenerate-btn");
+      const regenerateModal = document.getElementById("regenerate-modal");
+      const regenerateForm = document.getElementById("regenerate-form");
+      const regenerateCancel = document.getElementById("regenerate-cancel");
+      const regenerateAccept = document.getElementById("regenerate-accept");
+
+      if (regenerateBtn && regenerateModal && regenerateForm) {
+        function openRegenerateModal(){
+          regenerateModal.style.display = "flex";
+          regenerateModal.removeAttribute("aria-hidden");
+          if (regenerateCancel) regenerateCancel.focus({ preventScroll:true });
+          
+          // Focus trap
+          const focusable = [regenerateCancel, regenerateAccept].filter(Boolean);
+          function onKey(e){
+            if (e.key === "Escape") { e.preventDefault(); closeRegenerateModal(); }
+            if (e.key === "Tab") {
+              e.preventDefault();
+              const i = focusable.indexOf(document.activeElement);
+              focusable[(i + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length].focus();
+            }
+          }
+          regenerateModal._onKey = onKey;
+          document.addEventListener("keydown", onKey);
+          
+          // Close on backdrop click
+          regenerateModal.addEventListener("click", function(e){
+            if (e.target === regenerateModal) closeRegenerateModal();
+          });
+        }
+
+        function closeRegenerateModal(){
+          document.removeEventListener("keydown", regenerateModal._onKey || (()=>{}));
+          regenerateModal._onKey = null;
+          regenerateModal.style.display = "none";
+          regenerateModal.setAttribute("aria-hidden","true");
+          if (regenerateBtn) regenerateBtn.focus({ preventScroll:true });
+        }
+
+        regenerateBtn.addEventListener("click", openRegenerateModal);
+        if (regenerateCancel) regenerateCancel.addEventListener("click", closeRegenerateModal);
+        if (regenerateAccept) {
+          regenerateAccept.addEventListener("click", function(){
+            closeRegenerateModal();
+            regenerateForm.submit();
+          });
+        }
+      }
+
+      // Delete API Key Modal - Modal elements and handlers
+      const deleteBtn = document.getElementById("delete-btn");
+      const deleteModal = document.getElementById("delete-modal");
+      const deleteForm = document.getElementById("delete-form");
+      const deleteCancel = document.getElementById("delete-cancel");
+      const deleteAccept = document.getElementById("delete-accept");
+
+      if (deleteBtn && deleteModal && deleteForm) {
+        function openDeleteModal(){
+          deleteModal.style.display = "flex";
+          deleteModal.removeAttribute("aria-hidden");
+          if (deleteCancel) deleteCancel.focus({ preventScroll:true });
+          
+          // Focus trap
+          const focusable = [deleteCancel, deleteAccept].filter(Boolean);
+          function onKey(e){
+            if (e.key === "Escape") { e.preventDefault(); closeDeleteModal(); }
+            if (e.key === "Tab") {
+              e.preventDefault();
+              const i = focusable.indexOf(document.activeElement);
+              focusable[(i + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length].focus();
+            }
+          }
+          deleteModal._onKey = onKey;
+          document.addEventListener("keydown", onKey);
+          
+          // Close on backdrop click
+          deleteModal.addEventListener("click", function(e){
+            if (e.target === deleteModal) closeDeleteModal();
+          });
+        }
+
+        function closeDeleteModal(){
+          document.removeEventListener("keydown", deleteModal._onKey || (()=>{}));
+          deleteModal._onKey = null;
+          deleteModal.style.display = "none";
+          deleteModal.setAttribute("aria-hidden","true");
+          if (deleteBtn) deleteBtn.focus({ preventScroll:true });
+        }
+
+        deleteBtn.addEventListener("click", openDeleteModal);
+        if (deleteCancel) deleteCancel.addEventListener("click", closeDeleteModal);
+        if (deleteAccept) {
+          deleteAccept.addEventListener("click", function(){
+            closeDeleteModal();
+            deleteForm.submit();
+          });
+        }
+      }
+
+      // Generate API Key button - No confirmation needed for first generation
+      const generateBtn = document.getElementById("generate-btn");
+      const generateForm = document.getElementById("generate-form");
+      if (generateBtn && generateForm) {
+        generateBtn.addEventListener("click", function(){
+          generateForm.submit();
+        });
+      }
+
+      // Account Verification Required Modal - Modal elements and handlers
+      const verificationModal = document.getElementById("verification-modal");
+      const verificationClose = document.getElementById("verification-close");
+      
+      {% if show_verification_modal %}
+      // Show the modal if account verification is required
+      if (verificationModal) {
+        function openVerificationModal() {
+          verificationModal.style.display = "flex";
+          verificationModal.removeAttribute("aria-hidden");
+          if (verificationClose) verificationClose.focus({ preventScroll: true });
+          
+          // Focus trap
+          function onKey(e) {
+            if (e.key === "Escape") {
+              e.preventDefault();
+              closeVerificationModal();
+            }
+            if (e.key === "Tab") {
+              e.preventDefault();
+              if (verificationClose) verificationClose.focus();
+            }
+          }
+          verificationModal._onKey = onKey;
+          document.addEventListener("keydown", onKey);
+          
+          // Close on backdrop click
+          verificationModal.addEventListener("click", function(e) {
+            if (e.target === verificationModal) closeVerificationModal();
+          });
+        }
+        
+        function closeVerificationModal() {
+          document.removeEventListener("keydown", verificationModal._onKey || (() => {}));
+          verificationModal._onKey = null;
+          verificationModal.style.display = "none";
+          verificationModal.setAttribute("aria-hidden", "true");
+        }
+        
+        // Wire up close button
+        if (verificationClose) {
+          verificationClose.addEventListener("click", closeVerificationModal);
+        }
+        
+        // Open modal on page load
+        openVerificationModal();
+      }
+      {% endif %}
+    });
+  </script>
+</body>
+</html>
