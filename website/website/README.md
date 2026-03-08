@@ -25,7 +25,7 @@ All sensitive values are loaded from a `.env` file via `environs`. No secrets ar
 | Section | Notes |
 |---|---|
 | `SECRET_KEY` | Loaded from `.env` — required, no default |
-| `DEBUG` | Defaults to `True` in development; set `False` in production |
+| `DEBUG` | Loaded from `.env` (defaults to `False`); set `True` for development, `False` in production |
 | `ALLOWED_HOSTS` | Defaults to `localhost`/`127.0.0.1` in debug; must be set via `.env` in production |
 | `INSTALLED_APPS` | Includes `api`, `rest_framework`, `drf_spectacular`, `rest_framework_api_key` |
 | `DATABASES` | SQLite in development; switches to MySQL when `USE_CLOUD_DB=True` |

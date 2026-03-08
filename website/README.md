@@ -8,7 +8,7 @@ This is the root of the Django project. It contains all application source code,
 
 ```
 website/
-├── api/                  # Django app — models, views, serializers, authentication
+├── api/                  # Django app — models, views, serializers, authentication, tests/
 ├── static/               # Source static files (CSS, JS, images)
 ├── templates/            # HTML templates
 ├── website/              # Django project configuration (settings, URLs, WSGI)
@@ -40,17 +40,18 @@ All sensitive configuration is loaded from a `.env` file in this directory. This
 ## 🚀 Running Locally
 
 ```bash
-# 1. Create and activate a virtual environment
+# 1. Create and activate a virtual environment (from repo root)
 python -m venv venv
 venv\Scripts\activate          # Windows
 source venv/bin/activate       # macOS/Linux
 
-# 2. Install dependencies
+# 2. Install dependencies (from repo root, where requirements.txt lives)
 pip install -r requirements.txt
 
-# 3. Create your .env file (see Environment Variables above)
+# 3. Create your .env file in this directory (see Environment Variables above)
 
-# 4. Apply migrations
+# 4. Apply migrations (from website/)
+cd website
 python manage.py migrate
 
 # 5. Start the development server

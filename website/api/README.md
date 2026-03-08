@@ -18,9 +18,30 @@ This is the main Django application. It contains all models, views, serializers,
 | `spectacular_auth_extension.py` | drf-spectacular extension for API key auth scheme |
 | `admin.py` | Django admin registrations |
 | `apps.py` | App configuration |
-| `tests.py` | Test placeholder |
+| `tests/` | Test suite — see [tests/README.md](tests/README.md) for details |
 | `urls.py` | App-level URL patterns (if used) |
 | `migrations/` | Database migration history |
+
+---
+
+## 🧪 Tests
+
+The **`tests/`** directory contains the full test suite for the api app, split into separate modules:
+
+| Module | File | Coverage |
+|---|---|---|
+| Models | [test_models.py](tests/test_models.py) | StockLevels, UserProfile, SiteSettings (13 tests) |
+| Forms | [test_forms.py](tests/test_forms.py) | UserRegistrationForm (9 tests) |
+| Authentication | [test_authentication.py](tests/test_authentication.py) | CustomAPIKeyAuthentication (6 tests) |
+| Serializers | [test_serializers.py](tests/test_serializers.py) | StockLevelsSerializer (4 tests) |
+| Views | [test_views.py](tests/test_views.py) | Home, stock levels API/CSV, registration, profile (27 tests) |
+
+Tests run against an in-memory SQLite database — no `.env` or external database required.
+
+- **Run all tests:** from the `website/` directory: `python manage.py test api`
+- **Run one module:** from `website/`: e.g. `python manage.py test api.tests.test_models` (use module path without `.py`; add `--verbosity=2` for per-test output)
+- **Run one file directly:** from the repo root, set env vars then run e.g. `python website/api/tests/test_models.py` (each file is runnable on its own)
+- **Documentation:** see **[tests/README.md](tests/README.md)** for full layout, run commands, and per-file coverage.
 
 ---
 

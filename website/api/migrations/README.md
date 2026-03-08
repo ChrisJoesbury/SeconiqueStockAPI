@@ -25,6 +25,7 @@ Migrations are applied in order and should **always be committed to the reposito
 | `0013_remove_stocklevels_inactive` | Removes the `inactive` field from `stocklevels` |
 | `0014_sitesettings` | Creates the `SiteSettings` singleton model |
 | `0015_userprofile_company_name` | Adds `company_Name` field to `UserProfile` |
+| `0016_rename_stocklevels_to_StockLevels` | Renames `stocklevels` table/model to `StockLevels` |
 
 ---
 

@@ -131,7 +131,7 @@ python manage.py runserver
 
 ## 🧪 Running Tests
 
-The test suite covers models, forms, authentication, serializers, and all API endpoints. Tests use Django's built-in test runner with an in-memory SQLite database — no `.env` file or external database required.
+The test suite lives in **`website/api/tests/`**, split into separate modules: `test_models.py`, `test_forms.py`, `test_authentication.py`, `test_serializers.py`, and `test_views.py`. It covers models, forms, authentication, serializers, and all API and view endpoints. Tests use Django's built-in test runner with an in-memory SQLite database — no `.env` file or external database required.
 
 From the `website/` directory (with your virtual environment activated), set the required environment variables and run:
 
@@ -145,24 +145,28 @@ SECRET_KEY=django-insecure-test-key DEBUG=True USE_CLOUD_DB=False python manage.
 $env:SECRET_KEY="django-insecure-test-key"; $env:DEBUG="True"; $env:USE_CLOUD_DB="False"; python manage.py test api
 ```
 
-For verbose output showing each individual test:
+For verbose output (each test name as it runs), add `--verbosity=2`:
+```bash
+SECRET_KEY=django-insecure-test-key DEBUG=True USE_CLOUD_DB=False python manage.py test api --verbosity=2
+```
 ```powershell
 $env:SECRET_KEY="django-insecure-test-key"; $env:DEBUG="True"; $env:USE_CLOUD_DB="False"; python manage.py test api --verbosity=2
 ```
 
-The suite contains **59 tests** across the following areas:
+The suite contains **59 tests** in five modules:
 
-| Area | Tests |
-|---|---|
-| Models (`stocklevels`, `UserProfile`, `SiteSettings`) | 13 |
-| Registration form validation | 9 |
-| API key authentication | 6 |
-| Stock levels serializer | 4 |
-| Stock levels API endpoint (filters, scoping) | 9 |
-| CSV download endpoint | 7 |
-| Registration view | 7 |
-| Profile view | 3 |
-| Home redirect | 1 |
+| Module | File | Tests |
+|---|---|---|
+| Models | `test_models.py` | 13 |
+| Forms | `test_forms.py` | 9 |
+| Authentication | `test_authentication.py` | 6 |
+| Serializers | `test_serializers.py` | 4 |
+| Views | `test_views.py` | 27 |
+
+- **Single module** (from `website/`): use the module path **without** `.py`, e.g. `python manage.py test api.tests.test_models` (or `test_forms`, `test_authentication`, `test_serializers`, `test_views`). Add `--verbosity=2` to see each test name.
+- **Single file directly** (from repo root): set env vars as above, then e.g. `python website/api/tests/test_models.py`.
+
+See **`website/api/tests/README.md`** for per-file test classes, direct-run examples, and full run instructions.
 
 ---
 
@@ -331,18 +335,28 @@ Each key is scoped to a customer — stock data is automatically filtered to ret
 
 ---
 
+## 📖 Documentation
+
+Additional documentation is in the **`docs/`** directory:
+
+- **[User Manual](docs/)** — End-user guide for the SeconiqueStockAPI application  
+- **[Admin User Manual](docs/)** — Administrator guide for managing and configuring the application  
+- **Database schema** — Sanitised MySQL DDL (see `docs/README.md` for details)
+
+---
+
 ## 📁 Folder Structure
 
 ```
 SeconiqueStockAPI/
 ├── requirements.txt    # Python dependencies
 ├── README.md           # Project documentation
-├── docs/               # Documentation files including DB schema
+├── docs/               # User manuals (PDF), database schema, and docs README
 ├── postman/            # Postman collection for API testing
 ├── seed/               # Data-loading scripts and fixtures
 └── website/            # Django project root
     ├── .env.example    # Environment variable template — copy to .env
-    ├── api/            # Django app — models, views, serializers, authentication
+    ├── api/            # Django app — models, views, serializers, authentication, tests/
     ├── static/         # Source static files (CSS, JS, images)
     ├── templates/      # HTML templates
     └── website/        # Project configuration (settings, URLs, WSGI)

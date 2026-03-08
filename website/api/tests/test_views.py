@@ -1,278 +1,32 @@
 # =============================================================================
-# SeconiqueStockAPI | tests.py
+# SeconiqueStockAPI | tests/test_views.py
 # =============================================================================
-# Test suite covering models, forms, authentication, serializers, and all API
-# and view endpoints. Runs against an in-memory SQLite database with no external
-# dependencies. Execute with: python manage.py test api
+# View tests: home, stock levels API/CSV, registration, profile.
+# Run with: python manage.py test api.tests.test_views
 # =============================================================================
 
-#Get Django files
-from django.test import TestCase, Client, RequestFactory
+# Configure Django when run directly (must run before Django imports below)
+if __name__ == '__main__':
+    import os
+    import sys
+    _website_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _website_dir not in sys.path:
+        sys.path.insert(0, _website_dir)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'website.settings')
+    import django
+    django.setup()
+
+# Get Django test files
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-
-#Get Framework files
+# Get Rest Framework test files
 from rest_framework.test import APIClient
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_api_key.models import APIKey
-
-#Get Local files
+# Get API files
 from api.models import StockLevels, UserProfile, SiteSettings
-from api.forms import UserRegistrationForm
-from api.authentication import CustomAPIKeyAuthentication
-from api.serializers import StockLevelsSerializer
 
-
-# ── Model Tests ───────────────────────────────────────────────────────────────
-
-class StockLevelsModelTest(TestCase):
-
-    def setUp(self):
-        self.item = StockLevels.objects.create(
-            company="TESTCO",
-            partNum="ABC123",
-            partDesc="Test Part",
-            rangeName="TestRange",
-            groupDesc="TestGroup",
-            subGroupDesc="TestSubGroup",
-            stockLev=10,
-        )
-
-    def test_str_representation(self):
-        self.assertEqual(str(self.item), "ABC123 - Test Part")
-
-    def test_default_stock_level(self):
-        item = StockLevels.objects.create()
-        self.assertEqual(item.stockLev, 0)
-
-    def test_last_updated_set_on_create(self):
-        self.assertIsNotNone(self.item.lastUpdatedDT)
-
-    def test_fields_stored_correctly(self):
-        self.assertEqual(self.item.company, "TESTCO")
-        self.assertEqual(self.item.partNum, "ABC123")
-        self.assertEqual(self.item.stockLev, 10)
-
-
-class UserProfileModelTest(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="TestPass1!")
-        self.profile = UserProfile.objects.create(user=self.user, company_Name="Acme Ltd")
-
-    def test_str_representation(self):
-        self.assertEqual(str(self.profile), "testuser")
-
-    def test_profile_linked_to_user(self):
-        self.assertEqual(self.profile.user, self.user)
-
-    def test_optional_fields_default_to_null(self):
-        self.assertIsNone(self.profile.cust_ID)
-        self.assertIsNone(self.profile.api_key)
-        self.assertIsNone(self.profile.company_ID)
-
-
-class SiteSettingsModelTest(TestCase):
-
-    def test_singleton_load_returns_same_instance(self):
-        s1 = SiteSettings.load()
-        s2 = SiteSettings.load()
-        self.assertEqual(s1.pk, s2.pk)
-
-    def test_only_one_instance_created(self):
-        SiteSettings.load()
-        SiteSettings.load()
-        self.assertEqual(SiteSettings.objects.count(), 1)
-
-    def test_str_representation(self):
-        s = SiteSettings.load()
-        self.assertEqual(str(s), "Site Settings")
-
-    def test_registration_disabled_by_default(self):
-        s = SiteSettings.load()
-        self.assertFalse(s.registration_enabled)
-
-    def test_save_always_uses_pk_1(self):
-        s = SiteSettings(registration_enabled=True)
-        s.save()
-        self.assertEqual(s.pk, 1)
-
-    def test_registration_can_be_toggled(self):
-        s = SiteSettings.load()
-        s.registration_enabled = True
-        s.save()
-        reloaded = SiteSettings.load()
-        self.assertTrue(reloaded.registration_enabled)
-
-
-# ── Form Tests ────────────────────────────────────────────────────────────────
-
-class UserRegistrationFormTest(TestCase):
-
-    def _valid_data(self, **overrides):
-        data = {
-            'username': 'newuser',
-            'email': 'new@example.com',
-            'company_Name': 'Acme Ltd',
-            'first_name': 'John',
-            'last_name': 'Doe',
-            'password': 'StrongPass1!',
-            'password_confirm': 'StrongPass1!',
-        }
-        data.update(overrides)
-        return data
-
-    def test_valid_form_is_valid(self):
-        form = UserRegistrationForm(data=self._valid_data())
-        self.assertTrue(form.is_valid(), form.errors)
-
-    def test_password_too_short_is_invalid(self):
-        form = UserRegistrationForm(data=self._valid_data(password='Short1!', password_confirm='Short1!'))
-        self.assertFalse(form.is_valid())
-        self.assertIn('password', form.errors)
-
-    def test_password_no_uppercase_is_invalid(self):
-        form = UserRegistrationForm(data=self._valid_data(password='alllowercase1!', password_confirm='alllowercase1!'))
-        self.assertFalse(form.is_valid())
-        self.assertIn('password', form.errors)
-
-    def test_password_no_digit_is_invalid(self):
-        form = UserRegistrationForm(data=self._valid_data(password='NoDigitPass!!', password_confirm='NoDigitPass!!'))
-        self.assertFalse(form.is_valid())
-        self.assertIn('password', form.errors)
-
-    def test_password_no_special_character_is_invalid(self):
-        form = UserRegistrationForm(data=self._valid_data(password='NoSpecialChar1', password_confirm='NoSpecialChar1'))
-        self.assertFalse(form.is_valid())
-        self.assertIn('password', form.errors)
-
-    def test_mismatched_passwords_are_invalid(self):
-        form = UserRegistrationForm(data=self._valid_data(password_confirm='DifferentPass1!'))
-        self.assertFalse(form.is_valid())
-
-    def test_duplicate_username_is_invalid(self):
-        User.objects.create_user(username='newuser', password='anything')
-        form = UserRegistrationForm(data=self._valid_data())
-        self.assertFalse(form.is_valid())
-        self.assertIn('username', form.errors)
-
-    def test_duplicate_email_is_invalid(self):
-        User.objects.create_user(username='other', email='new@example.com', password='anything')
-        form = UserRegistrationForm(data=self._valid_data())
-        self.assertFalse(form.is_valid())
-        self.assertIn('email', form.errors)
-
-    def test_all_required_fields_enforced(self):
-        form = UserRegistrationForm(data={})
-        self.assertFalse(form.is_valid())
-        for field in ['username', 'email', 'company_Name', 'first_name', 'last_name', 'password', 'password_confirm']:
-            self.assertIn(field, form.errors)
-
-
-# ── Authentication Tests ──────────────────────────────────────────────────────
-
-class CustomAPIKeyAuthenticationTest(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(username="apiuser", password="pass")
-        UserProfile.objects.create(user=self.user, cust_ID="CUST01")
-        self.api_key_obj, self.raw_key = APIKey.objects.create_key(name="CUST01_apiuser")
-        self.auth = CustomAPIKeyAuthentication()
-        self.factory = RequestFactory()
-
-    def _make_request(self, header_value):
-        return self.factory.get('/', HTTP_AUTHORIZATION=header_value)
-
-    def test_valid_key_returns_correct_user(self):
-        request = self._make_request(f"Api-Key {self.raw_key}")
-        result = self.auth.authenticate(request)
-        self.assertIsNotNone(result)
-        user, _ = result
-        self.assertEqual(user, self.user)
-
-    def test_missing_authorization_header_returns_none(self):
-        request = self.factory.get('/')
-        result = self.auth.authenticate(request)
-        self.assertIsNone(result)
-
-    def test_empty_authorization_header_returns_none(self):
-        request = self._make_request('')
-        result = self.auth.authenticate(request)
-        self.assertIsNone(result)
-
-    def test_wrong_prefix_returns_none(self):
-        request = self._make_request(f"Bearer {self.raw_key}")
-        result = self.auth.authenticate(request)
-        self.assertIsNone(result)
-
-    def test_invalid_key_raises_authentication_failed(self):
-        request = self._make_request("Api-Key completely-invalid-key")
-        with self.assertRaises(AuthenticationFailed):
-            self.auth.authenticate(request)
-
-    def test_key_name_with_underscore_in_username(self):
-        user2 = User.objects.create_user(username="user_with_underscore", password="pass")
-        UserProfile.objects.create(user=user2, cust_ID="CUST02")
-        _, raw_key2 = APIKey.objects.create_key(name="CUST02_user_with_underscore")
-        request = self._make_request(f"Api-Key {raw_key2}")
-        result = self.auth.authenticate(request)
-        self.assertIsNotNone(result)
-        user, _ = result
-        self.assertEqual(user, user2)
-
-
-# ── Serializer Tests ──────────────────────────────────────────────────────────
-
-class StockLevelsSerializerTest(TestCase):
-
-    def setUp(self):
-        self.item = StockLevels.objects.create(
-            company="CO001",
-            partNum="PART001",
-            partDesc="Part One",
-            rangeName="RangeA",
-            groupDesc="GroupA",
-            subGroupDesc="SubA",
-            stockLev=5,
-        )
-        self.scoped_user = User.objects.create_user(username="scoped", password="pass")
-        UserProfile.objects.create(user=self.scoped_user, company_ID="CO001")
-
-        self.admin_user = User.objects.create_user(username="admin_user", password="pass")
-        UserProfile.objects.create(user=self.admin_user, company_ID="")
-
-    def _make_request(self, user):
-        request = RequestFactory().get('/')
-        request.user = user
-        return request
-
-    def test_scoped_user_does_not_see_company_field(self):
-        request = self._make_request(self.scoped_user)
-        serializer = StockLevelsSerializer(self.item, context={'request': request})
-        self.assertNotIn('company', serializer.data)
-
-    def test_admin_user_sees_company_field(self):
-        request = self._make_request(self.admin_user)
-        serializer = StockLevelsSerializer(self.item, context={'request': request})
-        self.assertIn('company', serializer.data)
-        self.assertEqual(serializer.data['company'], 'CO001')
-
-    def test_all_standard_fields_present(self):
-        request = self._make_request(self.scoped_user)
-        serializer = StockLevelsSerializer(self.item, context={'request': request})
-        for field in ['partNum', 'partDesc', 'rangeName', 'groupDesc', 'subGroupDesc', 'stockLev', 'lastUpdatedDT']:
-            self.assertIn(field, serializer.data)
-
-    def test_field_values_are_correct(self):
-        request = self._make_request(self.scoped_user)
-        data = StockLevelsSerializer(self.item, context={'request': request}).data
-        self.assertEqual(data['partNum'], 'PART001')
-        self.assertEqual(data['stockLev'], 5)
-        self.assertEqual(data['groupDesc'], 'GroupA')
-
-
-# ── View Tests ────────────────────────────────────────────────────────────────
-
+# Test the home view redirect to API docs
 class HomeViewTest(TestCase):
 
     def test_home_redirects_to_api_docs(self):
@@ -280,6 +34,7 @@ class HomeViewTest(TestCase):
         self.assertRedirects(response, '/api/docs/', fetch_redirect_response=False)
 
 
+# Test the stock levels JSON API endpoint (auth, scoping, filters)
 class StockLevelsAPITest(TestCase):
 
     def _get_results(self, response):
@@ -366,6 +121,7 @@ class StockLevelsAPITest(TestCase):
             self.assertIn(field, first)
 
 
+# Test the stock levels CSV download endpoint
 class StockLevelsCSVTest(TestCase):
 
     def setUp(self):
@@ -423,6 +179,7 @@ class StockLevelsCSVTest(TestCase):
         self.assertNotIn('OTHER001', content)
 
 
+# Test the registration view (enabled/disabled, form, redirects)
 class RegistrationViewTest(TestCase):
 
     def setUp(self):
@@ -504,6 +261,7 @@ class RegistrationViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+# Test the profile view (login required, update)
 class ProfileViewTest(TestCase):
 
     def setUp(self):
@@ -534,3 +292,12 @@ class ProfileViewTest(TestCase):
         })
         self.user.refresh_from_db()
         self.assertEqual(self.user.email, 'updated@example.com')
+
+
+# Run this module's tests when file is executed directly
+if __name__ == '__main__':
+    from django.test.utils import get_runner
+    from django.conf import settings
+    runner = get_runner(settings)(verbosity=2)
+    failures = runner.run_tests(['api.tests.test_views'])
+    sys.exit(1 if failures else 0)
