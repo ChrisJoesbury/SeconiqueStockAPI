@@ -10,7 +10,13 @@ This folder contains the **sanitised database schema documentation** for Seconiq
 
 ## 📁 Files Included
 
-### **1. DatabaseSchema_sanitised.sql**
+### **1. [SeconiqueStockAPI User Manual v1-001.pdf](SeconiqueStockAPI%20User%20Manual%20v1-001.pdf)**
+End-user manual for the SeconiqueStockAPI application.
+
+### **2. [SeconiqueStockAPI Admin User Manual v1-001.pdf](SeconiqueStockAPI%20Admin%20User%20Manual%20v1-001.pdf)**
+Administrator manual for managing and configuring the SeconiqueStockAPI application.
+
+### **3. DatabaseSchema_sanitised.sql**
 This SQL file contains a **clean, public‑safe MySQL schema**, defining only the tables and views required for SeconiqueStockAPI operation.
 
 Included:
