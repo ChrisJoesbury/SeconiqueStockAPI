@@ -175,9 +175,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 # Google Cloud SQL Configuration
-# Connection details from: docs/google-cloud-instance-db details.txt
-# Instance: seconique-stocklevels-api
-# Connection Name: storied-deck-469407-s6:europe-west2:seconique-stocklevels-api
+# Connection details (DB_NAME, DB_HOST, etc.) are loaded from .env when USE_CLOUD_DB=True.
 
 # Try to use Google Cloud SQL if credentials are available, otherwise fall back to SQLite
 USE_CLOUD_DB = env.bool('USE_CLOUD_DB', default=False)

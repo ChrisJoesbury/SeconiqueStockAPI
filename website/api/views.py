@@ -159,7 +159,7 @@ def generate_api_key(request):
     if not profile_obj.cust_ID or not profile_obj.cust_ID.strip():
         messages.error(
             request,
-            "Account awaiting verification. Please contact it@seconique.co.uk to verify your account before generating an API key."
+            "Account awaiting verification. Please contact me@here.com to verify your account before generating an API key."
         )
         request.session['show_verification_modal'] = True
         return redirect('profile')
