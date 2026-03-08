@@ -7,6 +7,8 @@
 
 This folder contains the **Postman collection** for SeconiqueStockAPI. It provides ready-to-use requests for all API endpoints, with pre-configured filter parameters included as disabled examples that can be enabled as needed.
 
+**Tested on:** API running with Django 6.0.1 and Django REST Framework 3.15+; Postman v10+.
+
 ---
 
 ## 📁 Files Included

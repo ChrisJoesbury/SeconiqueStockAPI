@@ -2,7 +2,7 @@
 
 This directory contains Django's automatically generated database migration files. Each file represents a versioned change to the database schema.
 
-Migrations are applied in order and should **always be committed to the repository** so the schema stays in sync across all environments.
+Migrations are applied in order and should **always be committed to the repository** so the schema stays in sync across all environments. **Tested on:** Django 6.0.1; SQLite (development/tests) and MySQL 8.x (production).
 
 ---
 

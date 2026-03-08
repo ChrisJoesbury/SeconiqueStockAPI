@@ -2,6 +2,8 @@
 
 This is the Django **project configuration package** (the inner `website/` folder). It contains the project-level settings, URL routing, and server entry points.
 
+**Tested on:** Django 6.0.1; Python 3.13+ (see root [README.md](../../../README.md) for full stack).
+
 ---
 
 ## 📁 Files

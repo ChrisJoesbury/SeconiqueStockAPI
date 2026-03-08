@@ -6,6 +6,8 @@
 
 This folder contains the **sanitised database schema documentation** for SeconiqueStockAPI. This version excludes all Django framework tables, internal metadata, definers, and environment‑specific details. It includes **only the API‑related tables and views**, making it safe for public repositories.
 
+**Tested on:** MySQL 8.x; schema matches the API models used with Django 6.0.1.
+
 ---
 
 ## 📁 Files Included

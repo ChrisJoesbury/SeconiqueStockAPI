@@ -2,6 +2,8 @@
 
 Test suite for the SeconiqueStockAPI **api** app. All tests use Django's built-in test runner with an in-memory SQLite database — no `.env` file or external MySQL connection is required.
 
+**Tested on:** Python 3.13+, Django 6.0.1, Django REST Framework 3.15+, in-memory SQLite.
+
 ---
 
 ## 🚀 Running the tests

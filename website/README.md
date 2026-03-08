@@ -2,6 +2,8 @@
 
 This is the root of the Django project. It contains all application source code, configuration, templates, and static assets.
 
+**Tested on:** Python 3.13+, Django 6.0.1 (see root [README.md](../../README.md) for full stack).
+
 ---
 
 ## 📁 Directory Structure

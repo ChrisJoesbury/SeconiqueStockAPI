@@ -9,6 +9,8 @@ The `seed` folder contains the scripts and data needed to update the `api_stockl
 
 These resources support development, testing, data QA, and production reseeding.
 
+**Tested on:** Python 3.11+, pandas, SQLAlchemy, PyMySQL; MySQL 8.x. (Application stack: Python 3.13+, Django 6.0.1 — see root README.)
+
 ---
 
 ## 📁 Files Included

@@ -2,7 +2,7 @@
 
 This directory contains all Django HTML templates for the project's web-facing pages. Templates are located here (rather than inside the app) as they are shared across the project.
 
-The path is registered in `settings.py` under `TEMPLATES[0]["DIRS"]`.
+The path is registered in `settings.py` under `TEMPLATES[0]["DIRS"]`. **Tested on:** Django 6.0.1.
 
 ---
 

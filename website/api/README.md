@@ -2,6 +2,8 @@
 
 This is the main Django application. It contains all models, views, serializers, authentication logic, and forms for the SeconiqueStockAPI platform.
 
+**Tested on:** Python 3.13+, Django 6.0.1, Django REST Framework 3.15+ (see root [README.md](../../../README.md) for full stack).
+
 ---
 
 ## 📁 Files

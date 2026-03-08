@@ -53,6 +53,13 @@ Key capabilities include:
 ### Security / Crypto
 - cryptography — encryption & signing utilities
 
+### Tested on
+- **Python** 3.13+
+- **Django** 6.0.1
+- **Django REST Framework** 3.15+
+- **SQLite** (development and test suite)
+- **MySQL** 8.x (production / Cloud SQL)
+
 ---
 
 ## ✨ Features
