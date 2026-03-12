@@ -9,3 +9,5 @@ drf-spectacular-sidecar
 django-filter
 pymysql
 cryptography
+pandas
+sqlalchemy
